@@ -47,11 +47,11 @@ Server-side parameters are used to compute a hash that is stored in the database
 [PBKDF2-SHA256](https://en.wikipedia.org/wiki/PBKDF2) is used to derive the final password hash, which is sent to the server to authenticate the user.
 It is computed from the hash after [Argon2id](#argon2id) iterations.
 
-| Parameter   | Value        |
-|-------------|--------------|
-| Iterations  | 500          |
-| Salt        | (user email) |
-| Hash Length | 32 bytes     |
+| Parameter   | Value           |
+|-------------|-----------------|
+| Iterations  | 500             |
+| Salt        | (user password) |
+| Hash Length | 32 bytes        |
 
 ## Encryption
 
