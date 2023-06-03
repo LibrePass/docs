@@ -23,7 +23,7 @@ The following is an example of a decrypted cipher object:
     ],
     "twoFactor": null,
     "notes": "Take control of your passwords with LibrePass.",
-    "customFields": [
+    "fields": [
       {
         "name": "Custom Field",
         "value": "Custom Value"
@@ -33,6 +33,7 @@ The following is an example of a decrypted cipher object:
   "collection": null,
   "favorite": false,
   "rePrompt": false,
+  "version": 1,
   "created": 1685122977,
   "lastModified": 1685122977
 }
@@ -49,6 +50,7 @@ The following is an example of a decrypted cipher object:
 | collection           | UUID   | Unique identifier of the collection the cipher belongs to.    |
 | favorite             | bool   | Whether the cipher is marked as favorite.                     |
 | rePrompt             | bool   | Whether the password should be re-prompted. (Only UI-related) |
+| version              | int    | Version of the cipher.                                        |
 | created              | int    | Unix timestamp of the creation date.                          |
 | lastModified         | int    | Unix timestamp of the last modification date.                 |
 
@@ -64,22 +66,23 @@ The following is an example of a decrypted cipher object:
 
 #### Login Cipher
 
-| Field        | Type   | Description                                       |
-|--------------|--------|---------------------------------------------------|
-| name         | string | Name of the cipher.                               |
-| username     | string | Username of the cipher.                           |
-| password     | string | Password of the cipher.                           |
-| uris         | array  | List of URIs associated with the cipher.          |
-| twoFactor    | string | Two-factor authentication code of the cipher.     |
-| notes        | string | Notes of the cipher.                              |
-| customFields | array  | List of custom fields associated with the cipher. |
+| Field     | Type   | Description                                       |
+|-----------|--------|---------------------------------------------------|
+| name      | string | Name of the cipher.                               |
+| username  | string | Username of the cipher.                           |
+| password  | string | Password of the cipher.                           |
+| uris      | array  | List of URIs associated with the cipher.          |
+| twoFactor | string | Two-factor authentication code of the cipher.     |
+| notes     | string | Notes of the cipher.                              |
+| fields    | array  | List of custom fields associated with the cipher. |
 
 #### Secure Note Cipher
 
-| Field | Type   | Description          |
-|-------|--------|----------------------|
-| title | string | Title of the cipher. |
-| notes | string | Notes of the cipher. |
+| Field  | Type   | Description                                       |
+|--------|--------|---------------------------------------------------|
+| title  | string | Title of the cipher.                              |
+| notes  | string | Notes of the cipher.                              |
+| fields | array  | List of custom fields associated with the cipher. |
 
 #### Card Cipher
 
@@ -92,4 +95,19 @@ The following is an example of a decrypted cipher object:
 | expYear        | int    | Expiration year of the cipher.                    |
 | code           | string | Code of the cipher.                               |
 | notes          | string | Notes of the cipher.                              |
-| customFields   | array  | List of custom fields associated with the cipher. |
+| fields         | array  | List of custom fields associated with the cipher. |
+
+### Custom Field
+
+| Field | Type   | Description         |
+|-------|--------|---------------------|
+| name  | string | Name of the field.  |
+| type  | int    | Type of the field.  |
+| value | string | Value of the field. |
+
+#### Custom Field Type
+
+| Type | Description        |
+|------|--------------------|
+| 0    | Text Field         |
+| 1    | Hidden Text Field  |
