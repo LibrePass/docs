@@ -49,7 +49,7 @@ It is computed from the hash after [Argon2id](#argon2id) iterations.
 
 | Parameter   | Value           |
 |-------------|-----------------|
-| Iterations  | 500             |
+| Iterations  | 1               |
 | Salt        | (user password) |
 | Hash Length | 32 bytes        |
 
