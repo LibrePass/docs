@@ -2,69 +2,30 @@
 
 ## What does the server store?
 
-The server only stores data that is encrypted on the local device before sending it.
-So your secrets are safe and always yours!
+The server only stores data that is encrypted on the local device before sending it. So your secrets are safe and always yours!
 
-## KDF Algorithm (Key Derivation Function)
+## How does the encryption work?
 
-LibrePass first derives a key from your master password using the [Argon2](#argon2id) algorithm.
-This key is then used to decrypt the encryption key which is retrieved from the server in encrypted form.
-Before sending the key to the server, it has additional iterations using [PBKDF2-SHA256](#pbkdf2-sha256)
-because the earlier key was used for encryption key encryption.
+The encryption process follows the steps outlined below:
 
-### Argon2id
+1. **Key Generation:**
+    - The private key is derived from the password hash using the Argon2id algorithm.
+    - Argon2id is configured with the following default parameters:
+        - Memory: 64 MB
+        - Iterations: 4
+        - Parallelism: 3
+        - Salt: User email
+        - Hash Length: 32 bytes
+    - Curve25519 elliptic curve is used for the key exchange.
+    - The private key and public key (or the second user's public key) are used to generate a shared secret.
 
-LibrePass uses the Argon2id variant of [Argon2](https://en.wikipedia.org/wiki/Argon2). 
-This variant is resistant to side-channel attacks and GPU cracking.
+2. **Data Encryption:**
+    - AES GCM 256-bit algorithm is employed for data encryption.
+    - The shared secret generated in the previous step is used as the encryption key.
+    - The data is encrypted using the AES GCM algorithm with the generated key.
 
-#### Default Parameters (client-side)
+3. **Transmitting the Encrypted Data:**
+    - The encrypted data is then sent to the server.
+    - As the server only stores encrypted data, the confidentiality of your information is maintained.
 
-Client-side parameters are used to derive the key for encryption key encryption.
-They are not sent to the server. Sent to the server is the key after additional [PBKDF2-SHA256](#pbkdf2-sha256) iterations.
-
-| Parameter   | Value        |
-|-------------|--------------|
-| Memory      | 64 MB        |
-| Iterations  | 4            |
-| Parallelism | 3            |
-| Salt        | (user email) |
-| Hash Length | 32 bytes     |
-
-#### Server Parameters (server-side)
-
-Server-side parameters are used to compute a hash that is stored in the database.
-
-| Parameter   | Value    |
-|-------------|----------|
-| Memory      | 15 MB    |
-| Iterations  | 1        |
-| Parallelism | 1        |
-| Salt        | 32 bytes |
-| Hash Length | 32 bytes |
-
-### PBKDF2-SHA256
-
-[PBKDF2-SHA256](https://en.wikipedia.org/wiki/PBKDF2) is used to derive the final password hash, which is sent to the server to authenticate the user.
-It is computed from the hash after [Argon2id](#argon2id) iterations.
-
-| Parameter   | Value           |
-|-------------|-----------------|
-| Iterations  | 1               |
-| Salt        | (user password) |
-| Hash Length | 32 bytes        |
-
-## Encryption
-
-### AES-CBC
-
-[AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)-CBC 
-([Cipher Block Chaining](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_block_chaining_(CBC)))
-is used to encrypt secrets. The key for encryption/decryption is encryption key, 
-which is derived from the master password using [Argon2id](#argon2id).
-So together with a secure master password, it is unbreakable.
-
-### RSA
-
-[RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)) is used to encrypt data that is shared with other users.
-The public key and private key are generated on the client side, and the public key and private key are sent to the server.
-But the private key is encrypted using the encryption key.
+Please note that this is a simplified explanation of the encryption process, highlighting the key steps involved in securing your data.

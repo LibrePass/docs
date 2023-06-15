@@ -1,113 +1,111 @@
 # Cipher
 
-## Encryption
+The cipher is every entry added to the vault in LibrePass. It can be a login, a secure note, or a card.
 
-Ciphers are encrypted using the encryption key using AES-CBC with a 256-bit key.
-They are always stored and sent to the server in encrypted form.
+## EncryptedCipher
 
-## Example Cipher
+`EncryptedCipher` represents an encrypted cipher stored in the database.
 
-The following is an example of a decrypted cipher object:
+### Fields:
+- `id`: Cipher identifier.
+- `owner`: Owner identifier.
+- `type`: Cipher type (numeric value corresponding to the type in [CipherType](#ciphertype)).
+- `protectedData`: Encrypted cipher data.
+- `collection`: Collection identifier.
+- `favorite`: Whether the cipher is marked as a favorite.
+- `rePrompt`: Whether the password should be re-prompted (UI feature only).
+- `version`: Cipher version (currently 1).
+- `created`: Creation date.
+- `lastModified`: Last modified date.
 
-```json
-{
-  "id": "e31e264f-6624-47e9-a4cb-d6942e7ff215",
-  "owner": "09c1efa8-cf85-4949-9716-ca69cae8f3d7",
-  "type": 0,
-  "data": {
-    "name": "LibrePass",
-    "username": "librepass@medzik.dev",
-    "password": "Th3-V3ry-$3cure-P@ssw0rd",
-    "uris": [
-      "https://librepass.medzik.dev"
-    ],
-    "twoFactor": null,
-    "notes": "Take control of your passwords with LibrePass.",
-    "fields": [
-      {
-        "name": "Custom Field",
-        "value": "Custom Value"
-      }
-    ]
-  },
-  "collection": null,
-  "favorite": false,
-  "rePrompt": false,
-  "version": 1,
-  "created": 1685122977,
-  "lastModified": 1685122977
-}
-```
+## Cipher
 
-## Fields
+`Cipher` represents a single cipher entry.
 
-| Field                | Type   | Description                                                   |
-|----------------------|--------|---------------------------------------------------------------|
-| id                   | UUID   | Unique identifier of the cipher.                              |
-| owner                | UUID   | Unique identifier of the user who owns the cipher.            |
-| [type](#cipher-type) | int    | Type of the cipher.                                           |
-| [data](#cipher-data) | object | Cipher data.                                                  |
-| collection           | UUID   | Unique identifier of the collection the cipher belongs to.    |
-| favorite             | bool   | Whether the cipher is marked as favorite.                     |
-| rePrompt             | bool   | Whether the password should be re-prompted. (Only UI-related) |
-| version              | int    | Version of the cipher.                                        |
-| created              | int    | Unix timestamp of the creation date.                          |
-| lastModified         | int    | Unix timestamp of the last modification date.                 |
+### Fields:
+- `id`: Cipher identifier.
+- `owner`: Owner identifier.
+- `type`: Cipher type - [CipherType](#ciphertype).
+- `loginData`: Login data (only if the cipher is of type "Login") - [CipherLoginData](#cipherlogindata).
+- `secureNoteData`: Secure note data (only if the cipher is of type "SecureNote") - [CipherSecureNoteData](#ciphersecurenotedata).
+- `cardData`: Card data (only if the cipher is of type "Card") - [CipherCardData](#ciphercarddata).
+- `collection`: Collection identifier.
+- `favorite`: Whether the cipher is marked as a favorite.
+- `rePrompt`: Whether the cipher should be re-prompted (UI feature only).
+- `version`: Cipher version (currently 1).
+- `created`: Creation date.
+- `lastModified`: Last modified date.
 
-### Cipher Type
+## CipherType
 
-| Type | Description        |
-|------|--------------------|
-| 0    | Login Cipher       |
-| 1    | Secure Note Cipher |
-| 2    | Card Cipher        |
+`CipherType` is an enum class representing the type of cipher.
 
-### Cipher Data
+Values:
+- `Login`: Login cipher type.
+- `SecureNote`: Secure note cipher type.
+- `Card`: Card cipher type.
 
-#### Login Cipher
+## Cipher data
 
-| Field     | Type   | Description                                       |
-|-----------|--------|---------------------------------------------------|
-| name      | string | Name of the cipher.                               |
-| username  | string | Username of the cipher.                           |
-| password  | string | Password of the cipher.                           |
-| uris      | array  | List of URIs associated with the cipher.          |
-| twoFactor | string | Two-factor authentication code of the cipher.     |
-| notes     | string | Notes of the cipher.                              |
-| fields    | array  | List of custom fields associated with the cipher. |
+### CipherLoginData
 
-#### Secure Note Cipher
+`CipherLoginData` contains login data for a "Login" type cipher.
 
-| Field  | Type   | Description                                       |
-|--------|--------|---------------------------------------------------|
-| title  | string | Title of the cipher.                              |
-| notes  | string | Notes of the cipher.                              |
-| fields | array  | List of custom fields associated with the cipher. |
+#### Fields:
+- `name`: Cipher name.
+- `username`: Login username (can be null).
+- `password`: Login password (can be null).
+- `passwordHistory`: Password history, a list of `PasswordHistory` objects.
+- `uris`: List of login-related URIs.
+- `twoFactor`: Two-factor authentication secret.
+- `notes`: Notes for the cipher.
+- `fields`: Custom fields, represented as a list of `CipherField` objects.
 
-#### Card Cipher
+#### PasswordHistory
 
-| Field          | Type   | Description                                       |
-|----------------|--------|---------------------------------------------------|
-| cardholderName | string | Cardholder of the cipher.                         |
-| brand          | string | Brand of the cipher.                              |
-| number         | string | Number of the cipher.                             |
-| expMonth       | int    | Expiration month of the cipher.                   |
-| expYear        | int    | Expiration year of the cipher.                    |
-| code           | string | Code of the cipher.                               |
-| notes          | string | Notes of the cipher.                              |
-| fields         | array  | List of custom fields associated with the cipher. |
+`PasswordHistory` represents password history in `CipherLoginData`.
 
-### Custom Field
+#### Fields:
+- `password`: Password.
+- `lastUsed`: Date when the password was last used.
 
-| Field | Type   | Description         |
-|-------|--------|---------------------|
-| name  | string | Name of the field.  |
-| type  | int    | Type of the field.  |
-| value | string | Value of the field. |
+### CipherSecureNoteData
 
-#### Custom Field Type
+`CipherSecureNoteData` contains secure note data for a "SecureNote" type cipher.
 
-| Type | Description        |
-|------|--------------------|
-| 0    | Text Field         |
-| 1    | Hidden Text Field  |
+#### Fields:
+- `title`: Note title.
+- `note`: Secure note content.
+- `fields`: Custom fields, represented as a list of `CipherField` objects.
+
+### CipherCardData
+
+`CipherCardData` contains card data for a "Card" type cipher.
+
+#### Fields:
+- `cardholderName`: Cardholder name.
+- `brand`: Card brand (can be null).
+- `number`: Card number (can be null).
+- `expMonth`: Card expiration month (can be null).
+- `expYear`: Card expiration year (can be null).
+- `code`: Card CVV code (can be null).
+- `notes`: Notes for the card.
+- `fields`: Custom fields, represented as a list of `CipherField` objects.
+
+### CipherField
+
+`CipherField` represents a custom field in a cipher.
+
+#### Fields:
+- `name`: Field name.
+- `type`: Field type (enum value of `CipherFieldType`: Text, Hidden).
+- `value`: Field value.
+
+### CipherFieldType
+
+`CipherFieldType` is an enum class representing the type of a cipher field.
+
+Values:
+
+- `Text`: Text field.
+- `Hidden`: Hidden field.
